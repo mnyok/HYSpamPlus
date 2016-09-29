@@ -25,14 +25,13 @@ public class FirebaseMessageListener extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage message) {
-        String from = message.getFrom();
         Map<String, String> data = message.getData();
 
         Log.i("FirebaseMessageData", data.toString());
 
         try {
             //data1: title, data2: link url
-            sendPushNotification(data.get("data1"), data.get("data2"));
+            sendPushNotification(data.get("data1"), data.get("data2"), data.get("data3"));
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -40,7 +39,7 @@ public class FirebaseMessageListener extends FirebaseMessagingService {
 
     // invoke notification and vibration
     // If user clicks notification, open link with default browser
-    private void sendPushNotification(String title, String link) {
+    private void sendPushNotification(String title, String text, String link) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -48,20 +47,24 @@ public class FirebaseMessageListener extends FirebaseMessagingService {
         browserIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, browserIntent, PendingIntent.FLAG_ONE_SHOT);
 
+        // Notification viberate pattern
+        // [0]: delay before vibrator on
+        long[] vibePattern = new long[2];
+        vibePattern[0] = 0;
+        vibePattern[1] = 500;
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.hy)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.spam))
                 .setContentTitle(title)
-//                .setContentText(message)
+                .setContentText(text)
                 .setAutoCancel(true)
-                .setLights(000000255, 500, 2000)
+//                .setLights(002074136, 500, 2000)
+                .setTicker(text)
+                .setVibrate(vibePattern)
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        vibe.vibrate(500);
-
         notificationManager.notify(0, notificationBuilder.build());
     }
 }
