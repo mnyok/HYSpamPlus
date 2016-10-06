@@ -18,9 +18,6 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
-/**
- * Created by orc12 on 2016-09-29.
- */
 public class FirebaseMessageListener extends FirebaseMessagingService {
 
     @Override
@@ -28,13 +25,17 @@ public class FirebaseMessageListener extends FirebaseMessagingService {
         Map<String, String> data = message.getData();
 
         Log.i("FirebaseMessageData", data.toString());
-
-        try {
-            //data1: title, data2: link url
-            sendPushNotification(data.get("data1"), data.get("data2"), data.get("data3"));
-        } catch (Exception e){
-            e.printStackTrace();
+        if (getSharedPreferences("setting", MODE_PRIVATE).getBoolean("push", true)){
+            //user doesn't want to receive push notification
+            return;
         }
+
+            try {
+                //data1: title, data2: link url
+                sendPushNotification(data.get("data1"), data.get("data2"), data.get("data3"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
     // invoke notification and vibration
