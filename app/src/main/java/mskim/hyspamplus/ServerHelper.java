@@ -32,6 +32,7 @@ public class ServerHelper {
                     urlConnection.disconnect();
                 } catch (Exception e) {
 //                  @TODO: handle exception
+                    readString[0] = null;
                     e.printStackTrace();
                 }
             }
@@ -39,6 +40,7 @@ public class ServerHelper {
         thread.start();
         thread.join();
 
+        Log.i("input string", readString[0]);
         return readString[0];
     }
 

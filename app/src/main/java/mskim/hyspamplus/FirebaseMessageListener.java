@@ -1,5 +1,6 @@
 package mskim.hyspamplus;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -25,17 +26,14 @@ public class FirebaseMessageListener extends FirebaseMessagingService {
         Map<String, String> data = message.getData();
 
         Log.i("FirebaseMessageData", data.toString());
-        if (getSharedPreferences("setting", MODE_PRIVATE).getBoolean("push", true)){
+        if (!getSharedPreferences("setting", Activity.MODE_PRIVATE).getBoolean("push", true)) {
             //user doesn't want to receive push notification
+            Log.i("Push", "OFF");
             return;
         }
 
-            try {
-                //data1: title, data2: link url
-                sendPushNotification(data.get("data1"), data.get("data2"), data.get("data3"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        //data1: title, data2: text(body), data3: link url
+        sendPushNotification(data.get("data1"), data.get("data2"), data.get("data3"));
     }
 
     // invoke notification and vibration

@@ -18,10 +18,10 @@ public class NoticeData {
     private String title;
     private URL url;
 
-    public NoticeData(){
+    public NoticeData() {
     }
 
-    public NoticeData(String title, String url){
+    public NoticeData(String title, String url) {
         this.title = title;
         try {
             this.url = new URL(url);
@@ -30,23 +30,23 @@ public class NoticeData {
         }
     }
 
-    String getTitle(){
+    String getTitle() {
         return title;
     }
 
-    void setTitle(String title){
+    void setTitle(String title) {
         this.title = title;
     }
 
-    URL getUrl(){
+    URL getUrl() {
         return url;
     }
 
-    String getUrlString(){
+    String getUrlString() {
         return url.toString();
     }
 
-    void setUrl(URL url){
+    void setUrl(URL url) {
         this.url = url;
     }
 
@@ -55,14 +55,15 @@ public class NoticeData {
     }
 
     // convert JSON string to Arraylist<NoticeData> format
-    static ArrayList<NoticeData> listFromJSONString(String inputString){
+    static ArrayList<NoticeData> listFromJSONString(String inputString) {
         ArrayList<NoticeData> noticeDatas = new ArrayList<>();
         JSONObject jsonObject = null;
         noticeDatas.clear();
+        Log.i("input JSON string", inputString + " ");
         try {
             jsonObject = new JSONObject(inputString);
             JSONArray arr = jsonObject.getJSONArray("items");
-            for (int i = 0; i <arr.length(); i++){
+            for (int i = 0; i < arr.length(); i++) {
                 NoticeData dataNode = new NoticeData();
 
                 dataNode.setTitle(arr.getJSONObject(i).getString("title"));
@@ -71,6 +72,8 @@ public class NoticeData {
 
                 noticeDatas.add(dataNode);
             }
+        } catch (NullPointerException e) {
+            Log.e("JSON", "input string is null");
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("JSON", "Parse Error");
