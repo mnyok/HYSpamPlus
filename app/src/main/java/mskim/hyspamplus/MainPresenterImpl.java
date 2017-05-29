@@ -3,6 +3,7 @@ package mskim.hyspamplus;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 public class MainPresenterImpl implements MainPresenter{
     private Activity activity;
@@ -11,7 +12,7 @@ public class MainPresenterImpl implements MainPresenter{
 
     public MainPresenterImpl(Activity activity){
         this.activity = activity;
-        this.mainModel = new MainModel();
+        this.mainModel = new MainModel(this);
     }
 
     @Override
@@ -27,6 +28,11 @@ public class MainPresenterImpl implements MainPresenter{
     }
 
     @Override
+    public void onNoticeUpdate() {
+        this.view.onNoticeUpdate();
+    }
+
+    @Override
     public void updateNoticeList(){
         mainModel.refreshNoticeList();
         if (mainModel.getNoticeList().isEmpty()) {
@@ -39,5 +45,9 @@ public class MainPresenterImpl implements MainPresenter{
     public boolean togglePushSetting(){
         return SharedPreferenceManager.togglePush(activity);
 
+    }
+
+    public void log() {
+        Log.i("log", mainModel.getNotice(0).getTitle());
     }
 }

@@ -8,6 +8,8 @@ public interface MainPresenter {
 
     void onNoticeClick(int position);
 
+    void onNoticeUpdate();
+
     void updateNoticeList();
 
     boolean togglePushSetting();
@@ -15,5 +17,6 @@ public interface MainPresenter {
     interface View {
         void setNoticeList(ArrayList<NoticeData> noticeList);
         void showSnackBar(String string);
+        void onNoticeUpdate();
     }
 }

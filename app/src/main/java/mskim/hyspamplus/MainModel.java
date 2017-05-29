@@ -4,27 +4,31 @@ import java.util.ArrayList;
 
 
 public class MainModel {
+    private MainPresenterImpl mainPresenter;
     private ArrayList<NoticeData> noticeList = new ArrayList<>();
+
+    MainModel(MainPresenterImpl mainPresenter) {
+        this.mainPresenter = mainPresenter;
+    }
 
     // read JSON string from server and apply to listview
     public ArrayList<NoticeData> refreshNoticeList() {
-        ServerHelper serverHelper = new ServerHelper();
-
-        String jsonString = null;
-        try {
-            jsonString = serverHelper.getNoticeList();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        //If jsonString is null, it returns empty ArrayList(not null)
-        noticeList = NoticeData.listFromJSONString(jsonString);
-
+        new FetchNoticeTask(this).execute();
         return noticeList;
     }
 
+    public void addNotice(NoticeData notice) {
+        noticeList.add(notice);
+    }
+
+    public void clearNotice() {
+        noticeList.clear();
+    }
+
     public void setNoticeList(ArrayList<NoticeData> noticeList) {
-        this.noticeList = noticeList;
+        this.noticeList.clear();
+        this.noticeList.addAll(noticeList);
+        this.mainPresenter.onNoticeUpdate();
     }
 
     public ArrayList<NoticeData> getNoticeList() {

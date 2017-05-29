@@ -9,9 +9,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by orc12 on 2016-09-16.
- */
+
 public class NoticeAdapter extends BaseAdapter {
     TextView noticeTextView;
     Context mContext;
@@ -44,7 +42,7 @@ public class NoticeAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
