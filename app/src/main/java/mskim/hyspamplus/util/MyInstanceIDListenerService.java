@@ -1,4 +1,4 @@
-package mskim.hyspamplus;
+package mskim.hyspamplus.util;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;

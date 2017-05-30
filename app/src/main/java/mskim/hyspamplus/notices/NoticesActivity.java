@@ -1,6 +1,9 @@
-package mskim.hyspamplus;
+package mskim.hyspamplus.notices;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,14 +15,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements MainPresenter.View {
-    private MainPresenter mainPresenter;
-    NoticeAdapter noticeAdapter;
+import mskim.hyspamplus.data.notice.Notice;
+import mskim.hyspamplus.R;
+
+public class NoticesActivity extends AppCompatActivity implements NoticesContract.View{
+    private NoticesContract.Presenter mNoticesPresenter;
+    private NoticesAdapter mNoticesAdapter;
+
+    private TextView noNoticeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,27 +38,39 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         setContentView(R.layout.activity_main);
         FirebaseMessaging.getInstance().subscribeToTopic("HY_CSE");
 
-        mainPresenter = new MainPresenterImpl(MainActivity.this);
-        mainPresenter.setView(this);
+        new NoticesPresenter(this);
+
+        noNoticeView = (TextView) findViewById(R.id.no_notice);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ListView noticeListView = (ListView) findViewById(R.id.list_notice);
-        noticeAdapter = new NoticeAdapter(this);
-        noticeListView.setAdapter(noticeAdapter);
+        mNoticesAdapter = new NoticesAdapter();
+        noticeListView.setAdapter(mNoticesAdapter);
         noticeListView.setOnItemClickListener(noticeItemClickListener);
 
-        mainPresenter.updateNoticeList();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mNoticesPresenter.start();
     }
 
     AdapterView.OnItemClickListener noticeItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mainPresenter.onNoticeClick(position);
+            openNotice(mNoticesAdapter.getItem(position).getUrlString());
         }
     };
+
+    @Override
+    public void openNotice(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW
+                , Uri.parse(url));
+        startActivity(browserIntent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,21 +80,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     @Override
-    public void onNoticeUpdate() {
-        noticeAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        ((MainPresenterImpl)mainPresenter).log();
-        Log.i("notice count", noticeAdapter.getCount() + "");
-        noticeAdapter.notifyDataSetChanged();
-
         //push notification setting
         if (id == R.id.setting_push) {
-            if (mainPresenter.togglePushSetting()) {
+            if (mNoticesPresenter.togglePushSetting()) {
                 item.setTitle(R.string.setting_push_on);
             } else {
                 item.setTitle(R.string.setting_push_off);
@@ -82,8 +96,33 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     @Override
-    public void setNoticeList(ArrayList<NoticeData> noticeList) {
-        noticeAdapter.setItemList(noticeList);
+    public SharedPreferences getSettingPreference() {
+        return getSharedPreferences("setting", Activity.MODE_PRIVATE);
+
+    }
+
+    @Override
+    public void showNotices(ArrayList<Notice> noticeList) {
+        mNoticesAdapter.replaceData(noticeList);
+        noNoticeView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showEmptyNotices() {
+        noNoticeView.setText(R.string.no_notice);
+        noNoticeView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showLoadError() {
+        noNoticeView.setText(R.string.server_error);
+        noNoticeView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setPresenter(NoticesContract.Presenter presenter) {
+        // TODO: make fragment and separate it
+        mNoticesPresenter = presenter;
     }
 
     @Override

@@ -1,6 +1,5 @@
-package mskim.hyspamplus;
+package mskim.hyspamplus.data.notice;
 
-import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -11,52 +10,59 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-/**
- * Created by orc12 on 2016-09-16.
- */
-public class NoticeData {
+
+public class Notice {
     private String title;
     private URL url;
 
-    public NoticeData() {
+    Notice() {
     }
 
-    public NoticeData(String title, String url) {
+    public Notice(String title, String url) {
         this.title = title;
         try {
             this.url = new URL(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            setErrorUrl();
         }
     }
 
-    String getTitle() {
+    private void setErrorUrl(){
+        try {
+            this.url = new URL("http://cs.hanyang.ac.kr/ready.php");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getTitle() {
         return title;
     }
 
-    void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    URL getUrl() {
+    public URL getUrl() {
         return url;
     }
 
-    String getUrlString() {
+    public String getUrlString() {
         return url.toString();
     }
 
-    void setUrl(URL url) {
+    public void setUrl(URL url) {
         this.url = url;
     }
 
-    void setUrl(String url) throws MalformedURLException {
+    public void setUrl(String url) throws MalformedURLException {
         this.url = new URL(url);
     }
 
-    // convert JSON string to Arraylist<NoticeData> format
-    static ArrayList<NoticeData> listFromJSONString(String inputString) {
-        ArrayList<NoticeData> noticeDatas = new ArrayList<>();
+    // convert JSON string to Arraylist<Notice> format
+    public static ArrayList<Notice> listFromJSONString(String inputString) {
+        ArrayList<Notice> noticeDatas = new ArrayList<>();
         JSONObject jsonObject = null;
         noticeDatas.clear();
         Log.i("input JSON string", inputString + " ");
@@ -64,7 +70,7 @@ public class NoticeData {
             jsonObject = new JSONObject(inputString);
             JSONArray arr = jsonObject.getJSONArray("items");
             for (int i = 0; i < arr.length(); i++) {
-                NoticeData dataNode = new NoticeData();
+                Notice dataNode = new Notice();
 
                 dataNode.setTitle(arr.getJSONObject(i).getString("title"));
                 dataNode.setUrl(arr.getJSONObject(i).getString("link"));

@@ -1,4 +1,4 @@
-package mskim.hyspamplus;
+package mskim.hyspamplus.data.notice;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -8,23 +8,22 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
 
-public class FetchNoticeTask extends AsyncTask<URL, NoticeData, ArrayList<NoticeData>> {
-    MainModel mainModel;
+public class LoadNoticeTask extends AsyncTask<URL, Notice, ArrayList<Notice>> {
+    private LoadNoticeContract.LoadNoticeCallback callback;
 
-    FetchNoticeTask(MainModel mainModel) {
+    public LoadNoticeTask(LoadNoticeContract.LoadNoticeCallback callback) {
         super();
-        this.mainModel = mainModel;
+        this.callback = callback;
     }
 
     @Override
-    protected ArrayList<NoticeData> doInBackground(URL... urls) {
-        ArrayList<NoticeData> noticeList = new ArrayList<>();
+    protected ArrayList<Notice> doInBackground(URL... urls) {
+        ArrayList<Notice> noticeList = new ArrayList<>();
         // TODO: ignore pinned notice
         try {
             Document doc = Jsoup.connect("http://cs.hanyang.ac.kr/board/info_board.php").get();
@@ -37,18 +36,27 @@ public class FetchNoticeTask extends AsyncTask<URL, NoticeData, ArrayList<Notice
                 }
                 Log.i("notice data", "[" + notice.nodeName() + "]" + notice.text() + ": " + notice.attr("href"));
                 url = notice.baseUri() + notice.attr("href");
-                noticeList.add(new NoticeData(notice.text(), url));
+                noticeList.add(new Notice(notice.text(), url));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            // In case 404: Unable to resolve host "cs.hanyang.ac.kr": No address associated with hostname
+            Log.e("Load error", e.getMessage());
+            cancel(true);
         }
 
         return noticeList;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<NoticeData> result) {
+    protected void onPostExecute(ArrayList<Notice> result) {
         Log.i("Fetch Notice Complete", result.size() + " notices");
-        mainModel.setNoticeList(result);
+        callback.onTasksLoaded(result);
+    }
+
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        callback.onServerNotAvailable();
     }
 }

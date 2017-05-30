@@ -1,4 +1,4 @@
-package mskim.hyspamplus;
+package mskim.hyspamplus.util;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -6,18 +6,17 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.PowerManager;
-import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
+
+import mskim.hyspamplus.R;
+import mskim.hyspamplus.notices.NoticesActivity;
 
 public class FirebaseMessageListener extends FirebaseMessagingService {
 
@@ -39,7 +38,7 @@ public class FirebaseMessageListener extends FirebaseMessagingService {
     // invoke notification and vibration
     // If user clicks notification, open link with default browser
     private void sendPushNotification(String title, String text, String link) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, NoticesActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));

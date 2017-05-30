@@ -1,4 +1,4 @@
-package mskim.hyspamplus;
+package mskim.hyspamplus.util;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -6,8 +6,7 @@ import android.util.Log;
 
 
 public class SharedPreferenceManager {
-    static boolean togglePush(Activity activity){
-        SharedPreferences setting = activity.getSharedPreferences("setting", Activity.MODE_PRIVATE);
+    public static boolean togglePush(SharedPreferences setting){
         SharedPreferences.Editor editor = setting.edit();
 
         //toggle push preference
