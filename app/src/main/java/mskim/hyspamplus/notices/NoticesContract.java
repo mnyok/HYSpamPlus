@@ -11,8 +11,6 @@ import mskim.hyspamplus.data.notice.Notice;
 interface NoticesContract {
     interface View extends BaseView<Presenter>{
 
-        SharedPreferences getSettingPreference();
-
         void showNotices(ArrayList<Notice> noticeList);
 
         void showEmptyNotices();
@@ -28,8 +26,6 @@ interface NoticesContract {
     interface Presenter extends BasePresenter{
 
         void loadNotices();
-
-        boolean togglePushSetting();
 
     }
 }

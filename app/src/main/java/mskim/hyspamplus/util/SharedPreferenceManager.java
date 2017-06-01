@@ -1,12 +1,20 @@
 package mskim.hyspamplus.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 
 public class SharedPreferenceManager {
-    public static boolean togglePush(SharedPreferences setting){
+    private final Context mContext;
+
+    public SharedPreferenceManager(Context context) {
+        mContext = context;
+    }
+
+    public boolean togglePush(){
+        SharedPreferences setting = mContext.getSharedPreferences("setting", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = setting.edit();
 
         //toggle push preference
@@ -21,5 +29,10 @@ public class SharedPreferenceManager {
             editor.apply();
             return true;
         }
+    }
+
+    public boolean getPush() {
+        return mContext.getSharedPreferences("setting", Activity.MODE_PRIVATE).getBoolean("push", true);
+
     }
 }

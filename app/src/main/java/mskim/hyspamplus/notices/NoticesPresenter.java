@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import mskim.hyspamplus.data.notice.Notice;
 import mskim.hyspamplus.data.notice.LoadNoticeTask;
 import mskim.hyspamplus.data.notice.LoadNoticeContract;
-import mskim.hyspamplus.util.SharedPreferenceManager;
 
 class NoticesPresenter implements NoticesContract.Presenter {
     private NoticesContract.View view;
@@ -25,7 +24,7 @@ class NoticesPresenter implements NoticesContract.Presenter {
 
     @Override
     public void loadNotices(){
-        new LoadNoticeTask(new LoadNoticeContract.LoadNoticeCallback() {
+        new LoadNoticeTask(new LoadNoticeContract.Callback() {
             @Override
             public void onTasksLoaded(ArrayList<Notice> notices) {
                 Log.i("load Notices", "finished");
@@ -42,11 +41,5 @@ class NoticesPresenter implements NoticesContract.Presenter {
                 view.showLoadError();
             }
         }).execute();
-    }
-
-    @Override
-    public boolean togglePushSetting(){
-        return SharedPreferenceManager.togglePush(view.getSettingPreference());
-
     }
 }

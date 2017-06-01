@@ -14,9 +14,9 @@ import java.util.ArrayList;
 
 
 public class LoadNoticeTask extends AsyncTask<URL, Notice, ArrayList<Notice>> {
-    private LoadNoticeContract.LoadNoticeCallback callback;
+    private LoadNoticeContract.Callback callback;
 
-    public LoadNoticeTask(LoadNoticeContract.LoadNoticeCallback callback) {
+    public LoadNoticeTask(LoadNoticeContract.Callback callback) {
         super();
         this.callback = callback;
     }

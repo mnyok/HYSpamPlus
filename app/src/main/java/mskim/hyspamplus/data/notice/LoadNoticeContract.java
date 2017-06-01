@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public interface LoadNoticeContract {
 
-    interface LoadNoticeCallback {
+    interface Callback {
 
         void onTasksLoaded(ArrayList<Notice> notices);
 

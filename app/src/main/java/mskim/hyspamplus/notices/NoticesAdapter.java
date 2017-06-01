@@ -53,7 +53,7 @@ class NoticesAdapter extends BaseAdapter {
         TextView titleView;
         if (view == null) {
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.listitem_notice, parent, false);
+                    .inflate(R.layout.notice_item, parent, false);
 
             titleView = (TextView) view.findViewById(R.id.text_notice);
             //assign each Views
