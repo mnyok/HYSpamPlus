@@ -24,17 +24,23 @@ public class LoadNoticeTask extends AsyncTask<URL, Notice, ArrayList<Notice>> {
     @Override
     protected ArrayList<Notice> doInBackground(URL... urls) {
         ArrayList<Notice> noticeList = new ArrayList<>();
-        // TODO: ignore pinned notice
         try {
             Document doc = Jsoup.connect("http://cs.hanyang.ac.kr/board/info_board.php").get();
-            Elements notices = doc.select(".bbs_con tbody .left a");
+            Elements notices = doc.select(".bbs_con tbody tr");
 
             String url;
             for (Element notice : notices) {
-                if (notice.text().equals("")) {
+                Element font = notice.select("td font").first();
+                if (font != null) {
+                    // Pinned Notice
                     continue;
                 }
-                Log.i("notice data", "[" + notice.nodeName() + "]" + notice.text() + ": " + notice.attr("href"));
+
+                notice = notice.select(".left a").first();
+                if (notice == null || notice.text().equals("")) {
+                    continue;
+                }
+                Log.i("notice data", notice.text() + " : " + notice.attr("href"));
                 url = notice.baseUri() + notice.attr("href");
                 noticeList.add(new Notice(notice.text(), url));
             }
