@@ -8,7 +8,7 @@ import mskim.hyspamplus.data.notice.Notice;
 import mskim.hyspamplus.data.notice.LoadNoticeTask;
 import mskim.hyspamplus.data.notice.LoadNoticeContract;
 
-class NoticesPresenter implements NoticesContract.Presenter {
+public class NoticesPresenter implements NoticesContract.Presenter {
     private NoticesContract.View view;
 
     NoticesPresenter(NoticesContract.View view){
@@ -41,5 +41,12 @@ class NoticesPresenter implements NoticesContract.Presenter {
                 view.showLoadError();
             }
         }).execute();
+    }
+
+    // TODO: separate to handler class
+    @Override
+    public void onNoticeClick(Notice notice) {
+        Log.i("Notice clicked", notice.getTitle());
+        view.openNotice(notice.getUrlString());
     }
 }

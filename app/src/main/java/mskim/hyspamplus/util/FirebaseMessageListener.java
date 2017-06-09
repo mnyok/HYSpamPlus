@@ -45,7 +45,7 @@ public class FirebaseMessageListener extends FirebaseMessagingService {
         browserIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, browserIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        // Notification viberate pattern
+        // Notification vibrate pattern
         // [0]: delay before vibrator on
         long[] vibePattern = new long[2];
         vibePattern[0] = 0;

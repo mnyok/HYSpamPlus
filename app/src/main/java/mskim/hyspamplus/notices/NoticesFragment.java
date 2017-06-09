@@ -3,11 +3,13 @@ package mskim.hyspamplus.notices;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +21,14 @@ import java.util.ArrayList;
 
 import mskim.hyspamplus.R;
 import mskim.hyspamplus.data.notice.Notice;
+import mskim.hyspamplus.databinding.NoticeItemBinding;
+import mskim.hyspamplus.databinding.NoticesFragmentBinding;
 
 
 public class NoticesFragment extends Fragment implements NoticesContract.View {
     private NoticesContract.Presenter mPresenter;
 
-    private TextView noNoticeView;
-
-    private ListView noticesView;
+    private NoticesFragmentBinding binding;
 
     private NoticesAdapter mNoticesAdapter;
 
@@ -43,29 +45,27 @@ public class NoticesFragment extends Fragment implements NoticesContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNoticesAdapter = new NoticesAdapter();
+        // TODO: mPresenter is null on Instant run
+        mNoticesAdapter = new NoticesAdapter(mPresenter);
 
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.notices_fragment, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.notices_fragment, container, false);
 
-        noNoticeView = (TextView) root.findViewById(R.id.no_notice);
-
-        noticesView = (ListView) root.findViewById(R.id.list_notice);
-        noticesView.setAdapter(mNoticesAdapter);
-        noticesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                openNotice(mNoticesAdapter.getItem(position).getUrlString());
-
-            }
-        });
-        return root;
+        binding.listNotice.setAdapter(mNoticesAdapter);
+//        binding.listNotice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//                NoticeItemBinding binding = DataBindingUtil.findBinding(view);
+//                Log.i("Notice clicked", binding.getNotice().getTitle());
+//                openNotice(binding.getNotice().getUrlString());
+//            }
+//        });
+        return binding.getRoot();
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -75,25 +75,25 @@ public class NoticesFragment extends Fragment implements NoticesContract.View {
     @Override
     public void showNotices(ArrayList<Notice> noticeList) {
         mNoticesAdapter.replaceData(noticeList);
-        noNoticeView.setVisibility(View.GONE);
+        binding.noNotice.setVisibility(View.GONE);
     }
 
     @Override
     public void showEmptyNotices() {
-        noNoticeView.setText(R.string.no_notice);
-        noNoticeView.setVisibility(View.VISIBLE);
+        binding.noNotice.setText(R.string.no_notice);
+        binding.noNotice.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showLoadError() {
         showSnackBar("Server Error");
-        noNoticeView.setText(R.string.server_error);
-        noNoticeView.setVisibility(View.VISIBLE);
+        binding.noNotice.setText(R.string.server_error);
+        binding.noNotice.setVisibility(View.VISIBLE);
     }
 
 
     public void showSnackBar(String string){
-        Snackbar.make(noticesView, string, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(binding.listNotice, string, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

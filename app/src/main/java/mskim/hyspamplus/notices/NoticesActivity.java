@@ -3,6 +3,7 @@ package mskim.hyspamplus.notices;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -17,19 +18,20 @@ import android.widget.TextView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import mskim.hyspamplus.R;
+import mskim.hyspamplus.databinding.NoticesActivityBinding;
 import mskim.hyspamplus.util.SharedPreferenceManager;
 
 public class NoticesActivity extends AppCompatActivity {
     private NoticesContract.Presenter mNoticesPresenter;
+    private NoticesActivityBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.notices_activity);
+        binding = DataBindingUtil.setContentView(this, R.layout.notices_activity);
         FirebaseMessaging.getInstance().subscribeToTopic("HY_CSE");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
 
 
         NoticesFragment noticesFragment = (NoticesFragment) getSupportFragmentManager()

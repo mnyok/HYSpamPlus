@@ -4,6 +4,9 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
+    dataBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "mny.hyspamplus"
         minSdkVersion 15

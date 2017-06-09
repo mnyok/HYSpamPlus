@@ -1,5 +1,6 @@
 package mskim.hyspamplus.notices;
 
+import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +11,15 @@ import java.util.ArrayList;
 
 import mskim.hyspamplus.R;
 import mskim.hyspamplus.data.notice.Notice;
+import mskim.hyspamplus.databinding.NoticeItemBinding;
 
 
 class NoticesAdapter extends BaseAdapter {
+    private NoticesContract.Presenter presenter;
     private ArrayList<Notice> notices = new ArrayList<>();
 
-    NoticesAdapter(){
-
+    NoticesAdapter(NoticesContract.Presenter presenter){
+        this.presenter = presenter;
     }
 
     public void addItem(String title, String url){
@@ -50,25 +53,20 @@ class NoticesAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        TextView titleView;
+        NoticeItemBinding binding;
         if (view == null) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.notice_item, parent, false);
-
-            titleView = (TextView) view.findViewById(R.id.text_notice);
-            //assign each Views
-
+            binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.notice_item, parent, false);
         } else {
-            titleView = (TextView) view.getTag();
+            binding = DataBindingUtil.findBinding(view);
         }
+        binding.setPresenter(presenter);
 
         final Notice listElement = getItem(position);
         if (listElement != null){
-            titleView.setText(getItem(position).getTitle());
-
-            view.setTag(titleView);
+            binding.setNotice(listElement);
+            binding.executePendingBindings();
         }
 
-        return view;
+        return binding.getRoot();
     }
 }

@@ -8,7 +8,7 @@ import mskim.hyspamplus.BasePresenter;
 import mskim.hyspamplus.BaseView;
 import mskim.hyspamplus.data.notice.Notice;
 
-interface NoticesContract {
+public interface NoticesContract {
     interface View extends BaseView<Presenter>{
 
         void showNotices(ArrayList<Notice> noticeList);
@@ -27,5 +27,6 @@ interface NoticesContract {
 
         void loadNotices();
 
+        void onNoticeClick(Notice notice);
     }
 }
