@@ -1,7 +1,5 @@
 package mskim.hyspamplus.notices;
 
-import android.content.SharedPreferences;
-
 import java.util.ArrayList;
 
 import mskim.hyspamplus.BasePresenter;
